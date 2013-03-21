@@ -117,11 +117,10 @@
 
 
   <script>
-    var thisDb = "lcms"
-
-    Backbone.couch.options = {
-      database: 'lcms',
-      design: 'library'
+    Backbone.couch_connector.config.db_name = "lcms";
+    Backbone.couch_connector.config.ddoc_name = "library";
+    _.templateSettings = {
+      interpolate : /\{\{(.+?)\}\}/g
     };
   </script>
 
@@ -132,7 +131,13 @@
 
 
   <script>
-    var Group = Backbone.couch.Model.extend()
+    var GroupModel = Backbone.couch.Model.extend({
+      initialize : function(){
+        if(!this.get("date")){
+          this.set({"date": new Date().getTime()});
+        }
+      }
+    })
   </script>
 
 
@@ -142,20 +147,24 @@
 
 
   <script>
-    var Groups = Backbone.couch.Collection.extend({
-      couch: function() {
-        return {
-            view: 'library/groups',
-            include_docs: true
-        }
+    var GroupsList = Backbone.couch.Collection.extend({
+      db : {
+        view : "groups",
+        changes : true,
+        filter : Backbone.couch_connector.config.ddoc_name + "/groups"
       },
-      _db: Backbone.couch.db(thisDb)
+      url : "/groups",
+      model : GroupModel,
+      comparator : function(group){
+        return group.get("date");
+      }
     })
+    var Groups = new GroupsList()
   </script>
 
 
   <!-- 
-    BACKBONE VIEWS (CONTROLLERS)
+    BACKBONE VIEWS (CONTROLLERS) -> Need to create and EntryView equivalent. It's a view within a view.
   -->
 
 
