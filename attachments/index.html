@@ -8,6 +8,11 @@
 <body>
 
 
+  <!-- 
+    SCAFFOLDING
+  -->
+
+
   <div class="container">
     
     <h1>Group Manager</h1>
@@ -29,41 +34,74 @@
 
   </div>
 
+
+  <!-- 
+    DEPENDENCIES
+  -->
+
+
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js" type="text/javascript"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>
+
+
+  <!-- 
+    TOOLS
+  -->
+
 
   <script src="js/vendor/sha1.js"></script>
   <script src="js/vendor/jquery.couch.js"></script>
   <script src="js/vendor/backbone.couchdb.js"></script>
   <script src="js/vendor/html-encode.js"></script>
 
-    <script type="text/template" id="group-list-template">
-      <a href="#/new" class="btn btn-primary">New</a>
-      <hr />
-      <table class="table striped">
-        <thead>
+
+  <!--
+    TEMPLATES
+  -->
+
+
+  <script type="text/template" id="group-list-template">
+    <a href="#/new" class="btn btn-primary">New</a>
+    <hr />
+    <table class="table striped">
+      <thead>
+        <tr>
+          <th>Name</th><th>Level</th><th>Teacher</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(groups, function(group) { %>
           <tr>
-            <th>Name</th><th>Level</th><th>Teacher</th><th></th>
+            <td><%= htmlEncode(group.get('name')) %></td>
+            <td><%= htmlEncode(group.get('level')) %></td>
+            <td><%= htmlEncode(group.get('teacher')) %></td>
+            <td><a class="btn" href="#/edit/<%= group.id %>">Edit</a></td>
           </tr>
-        </thead>
-        <tbody>
-          <% _.each(groups, function(group) { %>
-            <tr>
-              <td><%= htmlEncode(group.get('name')) %></td>
-              <td><%= htmlEncode(group.get('level')) %></td>
-              <td><%= htmlEncode(group.get('teacher')) %></td>
-              <td><a class="btn" href="#/edit/<%= group.id %>">Edit</a></td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
+        <% }); %>
+      </tbody>
+    </table>
   </script>
+
+
+  <!--
+    SETTINGS
+  -->
+
 
   <script>
 
     var thisDb = "lcms"
 
+  </script>
+
+
+  <!--
+    BACKBONE COLLECTIONS
+  -->
+
+
+  <script>
     var Groups = Backbone.couch.Collection.extend({
       couch: function() {
         return {
@@ -73,7 +111,15 @@
       },
       _db: Backbone.couch.db(thisDb)
     })
+  </script>
 
+
+  <!-- 
+    BACKBONE VIEWS 
+  -->
+
+
+  <script>
     var GroupListView = Backbone.View.extend({
       el: '.group-manager',
       render: function () {
@@ -88,9 +134,16 @@
         })
       }
     });
+  </script>
 
+
+  <!-- 
+    BACKBONE ROUTER
+  -->
+
+
+  <script>
     var groupListView = new GroupListView()
-
 
     var Router = Backbone.Router.extend({
       routes: {
