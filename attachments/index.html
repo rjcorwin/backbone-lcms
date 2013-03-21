@@ -24,25 +24,73 @@
   <script src="js/vendor/backbone.couchdb.js"></script>
   <script src="js/vendor/html-encode.js"></script>
 
-  <script type="text/template" id="edit-group-template">
-    <form class="edit-group-form">
-      <legend><%= group ? 'Edit' : 'New' %> Group</legend>
-        <label>group name</label>
-        <input name="groupname" type="text" value="<%= group ? group.get('groupname') : '' %>">
-        <hr />
-       <button type="submit" class="btn"><%= group ? 'Update' : 'Create' %></button>
-       <% if(group) { %>
-        <input type="hidden" name="id" value="<%= group.id %>" />
-       <button data-group-id="<%= group.id %>" class="btn btn-danger delete">Delete</button>
-       <% }; %>
-    </form>
+    <script type="text/template" id="group-list-template">
+      <a href="#/new" class="btn btn-primary">New</a>
+      <hr />
+      <table class="table striped">
+        <thead>
+          <tr>
+            <th>Name</th><th>Level</th><th>Teacher</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% _.each(groups, function(group) { %>
+            <tr>
+              <td><%= htmlEncode(group.get('name')) %></td>
+              <td><%= htmlEncode(group.get('level')) %></td>
+              <td><%= htmlEncode(group.get('teacher')) %></td>
+              <td><a class="btn" href="#/edit/<%= group.id %>">Edit</a></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
   </script>
 
   <script>
 
-    var thisDb = "bell-lcms"
+    var thisDb = "lcms"
+
+    var Groups = Backbone.couch.Collection.extend({
+      couch: function() {
+        return {
+            view: 'library/groups',
+            include_docs: true
+        }
+      },
+      _db: Backbone.couch.db(thisDb)
+    })
+
+    var GroupListView = Backbone.View.extend({
+      el: '.page',
+      render: function () {
+        var that = this;
+        var groups = new Groups();
+        groups.fetch({
+          success: function (groups) {
+            console.log(groups)
+            var template = _.template($('#group-list-template').html(), {groups: groups.models});
+            that.$el.html(template);
+          }
+        })
+      }
+    });
+
+    var groupListView = new GroupListView()
 
 
+    var Router = Backbone.Router.extend({
+      routes: {
+        "": "home"
+      }
+    });
+
+    var router = new Router;
+    router.on('route:home', function() {
+      // render user list
+      groupListView.render();
+    })
+
+    Backbone.history.start();
   </script>
 
 

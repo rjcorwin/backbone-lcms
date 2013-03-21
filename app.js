@@ -110,6 +110,13 @@ ddoc.views = {
     }
   },
 
+  groups: {
+    map: function(doc) {
+      if (doc.type == "group") {
+        emit(doc._id, null)
+      }
+    }
+  },
 
   resources: {
     map: function(doc) {
