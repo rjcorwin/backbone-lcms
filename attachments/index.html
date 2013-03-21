@@ -9,11 +9,25 @@
 
 
   <div class="container">
-    <h1>User Manager</h1>
+    
+    <h1>Group Manager</h1>
     <hr />
-    <div class="page"></div>
-  </div>
+    <div class="group-manager"></div>
 
+    <h1>Collection Manager</h1>
+    <hr />
+    <div class="collection-manager"></div>
+
+
+    <h1>Resource Manager</h1>
+    <hr />
+    <div class="resource-manager"></div>
+
+    <h1>Resource Viewer</h1>
+    <hr />
+    <div class="resource-viewer"></div>
+
+  </div>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js" type="text/javascript"></script>
@@ -61,7 +75,7 @@
     })
 
     var GroupListView = Backbone.View.extend({
-      el: '.page',
+      el: '.group-manager',
       render: function () {
         var that = this;
         var groups = new Groups();
